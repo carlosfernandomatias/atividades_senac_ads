@@ -1,0 +1,33 @@
+# Atividade de Lista por Categorias
+
+Este projeto é uma aplicação simples em HTML, CSS e JavaScript que permite criar uma lista de itens organizados por categorias. O usuário pode adicionar itens a categorias específicas, e cada categoria exibe seus respectivos itens em uma lista ordenada.
+
+## Funcionalidades
+
+- Adicionar itens a categorias específicas.
+- Categorias disponíveis:
+  - **Limpeza**
+  - **Frutas**
+  - **Mercadoria**
+  - **Congelados**
+- Visualização dinâmica de itens adicionados em listas separadas por categoria.
+
+## Tecnologias Utilizadas
+
+- **HTML5** para a estrutura da página.
+- **CSS3** para estilização básica (não incluída neste exemplo, mas pode ser expandida).
+- **JavaScript** para a lógica de interação com a página.
+
+## Como Utilizar
+
+1. Clone ou baixe este repositório no seu computador.
+2. Abra o arquivo `index.html` em um navegador moderno.
+3. Insira o nome de um item no campo de texto.
+4. Clique em um dos botões correspondentes à categoria para adicionar o item à lista.
+5. O item será exibido automaticamente na lista da categoria selecionada.
+
+## Estrutura do Projeto
+
+```plaintext
+.
+├── index.html  # Arquivo principal com HTML, CSS e JavaScript embutidos

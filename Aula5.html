@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividade de Lista</title>
+</head>
+
+<body>
+
+<h1>Digite um valor na Lista</h1>
+<label for="Nome">Digite um item para sua lista</label>
+<input placeholder="Digite aqui" id="add"> </input> <br><br>
+
+<label for="Nome">Qual a categoria do seu produto?</label><br><br>
+<button id="limpeza">Limpeza</button>
+<button id="frutas">Frutas</button>
+<button id="mercadoria">Mercadoria</button>
+<button id="congelados">Congelados</button>
+
+<h2>Lista por Categoria:</h2>
+<div>
+    <h3>Limpeza:</h3>
+    <ol id="ol_limpeza"></ol>
+    <h3>Frutas:</h3>
+    <ol id="ol_frutas"></ol>
+    <h3>Mercadoria:</h3>
+    <ol id="ol_mercadoria"></ol>
+    <h3>Congelados:</h3>
+    <ol id="ol_congelados"></ol>
+</div>
+
+<script>
+    
+    const listas = {
+        limpeza: [],
+        frutas: [],
+        mercadoria: [],
+        congelados: []
+    };
+
+    
+    function adicionarItem(categoria) {
+        const item = document.getElementById('add').value.trim();
+        if (item) {
+            listas[categoria].push(item);
+            atualizarLista(categoria);
+            document.getElementById('add').value = ''; 
+        } else {
+            alert('Digite um item antes de adicionar!');
+        }
+    }
+
+    
+    function atualizarLista(categoria) {
+        const ol = document.getElementById(`ol_${categoria}`);
+        ol.innerHTML = ''; 
+        listas[categoria].forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            ol.appendChild(li);
+        });
+    }
+
+   
+    document.getElementById('limpeza').addEventListener('click', () => adicionarItem('limpeza'));
+    document.getElementById('frutas').addEventListener('click', () => adicionarItem('frutas'));
+    document.getElementById('mercadoria').addEventListener('click', () => adicionarItem('mercadoria'));
+    document.getElementById('congelados').addEventListener('click', () => adicionarItem('congelados'));
+</script>
+
+</body>
+</html>

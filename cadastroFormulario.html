@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuários</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .actions button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+        }
+
+        .actions button:hover {
+            background-color: #da190b;
+        }
+
+        .confirmar-edicao {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+        }
+
+        .confirmar-edicao:hover {
+            background-color: #f57c00;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Cadastro de Usuários</h1>
+    <div class="container">
+        <form id="formUsuario">
+            <input type="text" id="nome" placeholder="Nome" required>
+            <input type="tel" id="telefone" placeholder="Telefone" required>
+            <input type="email" id="email" placeholder="E-mail" required>
+            <input type="date" id="dataNascimento" required>
+            <input type="text" id="profissao" placeholder="Profissão" required>
+            <input type="text" id="endereco" placeholder="Endereço" required>
+            <button type="submit">Adicionar</button>
+        </form>
+
+        <table id="tabelaUsuarios">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>E-mail</th>
+                    <th>Data de Nascimento</th>
+                    <th>Profissão</th>
+                    <th>Endereço</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Linhas de usuários serão inseridas aqui -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+       
+        const form = document.getElementById('formUsuario');
+        const tabelaUsuarios = document.getElementById('tabelaUsuarios').getElementsByTagName('tbody')[0];
+        let linhaEditando = null; // Armazena a linha que está sendo editada
+
+        
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+          
+            const nome = document.getElementById('nome').value;
+            const telefone = document.getElementById('telefone').value;
+            const email = document.getElementById('email').value;
+            const dataNascimento = document.getElementById('dataNascimento').value;
+            const profissao = document.getElementById('profissao').value;
+            const endereco = document.getElementById('endereco').value;
+
+           
+            if (linhaEditando) {
+                linhaEditando.cells[0].textContent = nome;
+                linhaEditando.cells[1].textContent = telefone;
+                linhaEditando.cells[2].textContent = email;
+                linhaEditando.cells[3].textContent = dataNascimento;
+                linhaEditando.cells[4].textContent = profissao;
+                linhaEditando.cells[5].textContent = endereco;
+
+                
+                linhaEditando = null;
+                document.querySelector('#formUsuario button').textContent = 'Adicionar'; // Muda o texto do botão
+            } else {
+                
+                const novaLinha = tabelaUsuarios.insertRow();
+
+                
+                novaLinha.insertCell(0).textContent = nome;
+                novaLinha.insertCell(1).textContent = telefone;
+                novaLinha.insertCell(2).textContent = email;
+                novaLinha.insertCell(3).textContent = dataNascimento;
+                novaLinha.insertCell(4).textContent = profissao;
+                novaLinha.insertCell(5).textContent = endereco;
+
+                
+                const acoes = novaLinha.insertCell(6);
+                acoes.classList.add('actions');
+
+                
+                const btnEditar = document.createElement('button');
+                btnEditar.textContent = 'Editar';
+                btnEditar.addEventListener('click', function() {
+                    editarRegistro(novaLinha);
+                });
+                acoes.appendChild(btnEditar);
+
+               
+                const btnExcluir = document.createElement('button');
+                btnExcluir.textContent = 'Excluir';
+                btnExcluir.addEventListener('click', function() {
+                    excluirRegistro(novaLinha);
+                });
+                acoes.appendChild(btnExcluir);
+            }
+
+          
+            form.reset();
+        });
+
+      
+        function excluirRegistro(linha) {
+            tabelaUsuarios.deleteRow(linha.rowIndex);
+        }
+
+        
+        function editarRegistro(linha) {
+            const cells = linha.cells;
+
+          
+            document.getElementById('nome').value = cells[0].textContent;
+            document.getElementById('telefone').value = cells[1].textContent;
+            document.getElementById('email').value = cells[2].textContent;
+            document.getElementById('dataNascimento').value = cells[3].textContent;
+            document.getElementById('profissao').value = cells[4].textContent;
+            document.getElementById('endereco').value = cells[5].textContent;
+
+            document.querySelector('#formUsuario button').textContent = 'Confirmar Edição';
+
+           
+            linhaEditando = linha;
+        }
+    </script>
+
+</body>
+</html>

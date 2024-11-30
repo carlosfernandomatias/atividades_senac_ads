@@ -1,0 +1,16 @@
+import requests 
+
+
+url = "https://onsenacrn.sharepoint.com/sites/team_1-189335.189161/_layouts/15/embed.aspx?uniqueId=90b0bec9-96cc-4d76-b906-6c51b64bfa2b&access_token=v1.eyJzaXRlaWQiOiIzYTllYWZiNC05Y2RhLTQ0YWYtYjUyMS0xNmVlMTUzZGY0NWQiLCJhcHBfZGlzcGxheW5hbWUiOiJNaWNyb3NvZnQgVGVhbXMgV2ViIENsaWVudCIsImFwcGlkIjoiNWUzY2U2YzAtMmIxZi00Mjg1LThkNGItNzVlZTc4Nzg3MzQ2IiwiYXVkIjoiMDAwMDAwMDMtMDAwMC0wZmYxLWNlMDAtMDAwMDAwMDAwMDAwL29uc2VuYWNybi5zaGFyZXBvaW50LmNvbUAyOGMyNzQ1Ny0xYTU3LTRjYTUtYTgxZi05M2RiN2NhY2M0MjEiLCJleHAiOiIxNzMyNzUwOTYxIn0.CgoKBHNuaWQSAjg5EgsIlMGvzdDRxz0QBRoMNDAuMTI2LjQ1LjI4KixEbUdBR0tmMFVYMTl5YW9rcldVUmFpQ3AyTFJyL3RmQXRWcnoyWUJBYWNZPTCAATgBQhChaCKbCWAAcAl8uuxs1ocOShBoYXNoZWRwcm9vZnRva2VucikwaC5mfG1lbWJlcnNoaXB8MTAwMzIwMDJiNjBiNTNiYUBsaXZlLmNvbXoBMoIBEglXdMIoVxqlTBGoH5PbfKzEIZIBBkNhcmxvc5oBF0Zlcm5hbmRvIE1hdGlhcyBkZSBHb2lzogEfY2FybG9zMjgyMzAxNDZAZWR1bS5ybi5zZW5hYy5icqoBEDEwMDMyMDAyQjYwQjUzQkGyAShhbGxmaWxlcy53cml0ZSBncm91cC5yZWFkIGFsbHNpdGVzLndyaXRlyAEB.1mdwaqFCKWjhjD-qju9MXrMeAVo4PicyE3H7FQUcm6Q&embed=%7B%22ha%22%3A%22teams%22%2C%22hv%22%3A%22assignments%22%2C%22hm%22%3A%22view%22%2C%22hp%22%3A%22web%22%2C%22nb%22%3Atrue%7D"
+
+headers=  {
+"contenty-type" : "aplicction/json"
+}
+
+payload = {
+
+
+}
+response = requests.get(url, data = payload, headers=headers)
+
+print(response)

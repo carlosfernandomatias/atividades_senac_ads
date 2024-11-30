@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Caracteres</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contador de Vogais e Caracteres</h1>
+    <label for="palavra">Digite uma palavra:</label>
+    <input type="text" id="palavra" placeholder="Exemplo: banana">
+
+    <label for="caractere">Digite a letra que deseja verificar:</label>
+    <input type="text" id="caractere" placeholder="Exemplo: a" maxlength="1">
+
+    <button onclick="processarDados()">Verificar</button>
+
+    <div id="resultado"></div>
+
+    <script>
+     
+        function ContaVogais(palavra) {
+            let total = 0;
+            palavra = palavra.toLowerCase();
+            const ListaVogais = ["a", "e", "i", "o", "u"];
+
+            for (let i of palavra) {
+                if (ListaVogais.includes(i)) {
+                    total++;
+                }
+            }
+            return total;
+        }
+
+        function ContarCaracter(palavra, caractere) {
+            let total = 0;
+            palavra = palavra.toLowerCase();
+            caractere = caractere.toLowerCase();
+
+            for (let i of palavra) {
+                if (caractere === i) {
+                    total++;
+                }
+            }
+            return total;
+        }
+
+        /**
+         * Função para processar os dados e exibir os resultados
+         */
+        function processarDados() {
+            const palavra = document.getElementById("palavra").value.trim();
+            const caractere = document.getElementById("caractere").value.trim();
+            const resultadoDiv = document.getElementById("resultado");
+
+            if (!palavra || !caractere) {
+                resultadoDiv.textContent = "Por favor, preencha ambos os campos.";
+                return;
+            }
+
+            if (caractere.length > 1) {
+                resultadoDiv.textContent = "Por favor, insira apenas um caractere no campo de verificação.";
+                return;
+            }
+
+            const quantidadeVogais = ContaVogais(palavra);
+            const quantidadeCaracter = ContarCaracter(palavra, caractere);
+
+            resultadoDiv.innerHTML = `
+                <p>Quantidade de vogais: <strong>${quantidadeVogais}</strong></p>
+                <p>Quantidade da letra '${caractere}': <strong>${quantidadeCaracter}</strong></p>
+            `;
+        }
+    </script>
+</body>
+</html>

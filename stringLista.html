@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividade de Lista</title>
+</head>
+
+<body>
+
+<h1> Digite um valor para adicionar na Lista</h1>
+<label for="Nome"> Nome String </label>
+<input placeholder="Digite aqui" id="add"> </input> <br><br>
+<button id="adicionar"> adicionar na lista </button><br><br>       
+<label for="excluir"> excluir o último valor? </label><br> <br> 
+<button id="excluir"> Excluir último valor</button><br><br>   
+<label for="Nome"> digite um valor específico para excluir</label><br> <br> 
+<input placeholder="Digite aqui" id ="valorEspecifico"> </input> <br>  <br>  
+<button id="valor_Especifico"> Excluir</button>
+
+
+<script>
+    let Lista = []
+    let H3 = document.createElement('h3')
+    
+    document.getElementById("adicionar").addEventListener('click',()=>{
+              let palavra = document.getElementById('add').value
+              Lista.push(palavra)
+              H3.innerHTML = `${Lista}`
+              document.body.appendChild(H3)
+    })
+
+    document.getElementById("excluir").addEventListener('click',()=>{
+    
+    Lista.pop();
+    H3.textContent = `${Lista}`
+    document.body.appendChild(H3)
+
+    })
+
+
+    document.getElementById("valor_Especifico").addEventListener('click',()=>{
+        let palavra = document.getElementById('valorEspecifico').value
+        let indice = Lista.indexOf(palavra)
+        Lista.splice(indice)  
+        H3.textContent = `${Lista}`
+        document.body.appendChild(H3)
+
+    })
+    
+    </script>
+</body>
+
+</html>
