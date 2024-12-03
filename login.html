@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<style>
+/* Resetando alguns estilos padrão */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Corpo da página */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+/* Container de login */
+.login-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+/* Título */
+h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Estilos para os inputs */
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Estilos para o botão */
+button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+</style>
+<body>
+
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="username">Usuário:</label>
+                <input type="text" id="username" name="username" placeholder="Digite seu usuário" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+            </div>
+            <button type="submit">Entrar</button>
+            <p id="error-message" class="error-message"></p>
+        </form>
+    </div>
+<script>
+// Função para simular a chamada à API com async/await
+async function autenticarUsuario(username, password) {
+    const url = 'https://x8ki-letl-twmt.n7.xano.io/api:NzSrOVdQ/auth/login'; // URL fictícia para a simulação da API
+    const dados = {
+        email: username,
+        password: password
+    };
+
+    try {
+        const resposta = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dados)
+        });
+
+        // Se a resposta não for OK (erro no código de status)
+        if (!resposta.ok) {
+            throw new Error('Erro na requisição!');
+        }
+
+        // Convertendo a resposta para JSON
+        const resultado = await resposta.json();
+
+        // Verificando o resultado da resposta
+        return resultado;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw new Error('Houve um erro ao tentar autenticar. Tente novamente!');
+    }
+}
+
+// Função que lida com o envio do formulário de login
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Impede o envio do formulário
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const resultado = await autenticarUsuario(username, password);
+
+        if (resultado.authToken) {
+            alert("Login bem-sucedido!");
+            console.log(resultado.authToken)
+            localStorage.setItem('authToken', resultado.authToken);
+            window.location.href = "dashboard.html"; // Redireciona para a página de dashboard
+        } else {
+            document.getElementById('error-message').textContent = resultado.message;
+        }
+    } catch (erro) {
+        document.getElementById('error-message').textContent = erro.message;
+    }
+});
+
+</script>
+ 
+</body>
+</html>
