@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reservas - Cinema</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .session-info {
+            margin-bottom: 20px;
+        }
+
+        .assentos {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .assento {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .assento.reservado {
+            background-color: #f44336;
+            color: white;
+            cursor: not-allowed;
+        }
+
+        .assento.selecionado {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button {
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .finalizar {
+            background-color: #2196F3;
+        }
+
+        .finalizar:hover {
+            background-color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Sistema de Reservas - Cinema</h1>
+    <div class="container">
+        <div class="session-info">
+            <h2>Escolha a Sessão</h2>
+            <label for="sala">Sala:</label>
+            <select id="sala">
+                <option value="tradicional">Tradicional</option>
+                <option value="vip">Vip</option>
+            </select>
+
+            <label for="filme">Filme:</label>
+            <select id="filme">
+                <option value="filme1">Filme 1</option>
+                <option value="filme2">Filme 2</option>
+            </select>
+
+            <label for="data">Data:</label>
+            <input type="date" id="data">
+
+            <label for="horario">Horário:</label>
+            <select id="horario">
+                <option value="19:00">19:00</option>
+                <option value="21:00">21:00</option>
+            </select>
+        </div>
+
+        <button onclick="mostrarAssentos()">Ver Assentos</button>
+
+        <div id="assentos-container" style="display: none;">
+            <h2>Escolha seu assento</h2>
+            <div class="assentos" id="assentos"></div>
+            <button onclick="finalizarReserva()" class="finalizar">Finalizar Reserva</button>
+        </div>
+    </div>
+
+    <script>
+        const salas = {
+            tradicional: 70,
+            vip: 35
+        };
+
+        const reservas = {
+            tradicional: [],
+            vip: []
+        };
+
+        function verificarConflito(sala, assento, data, horario) {
+            return reservas[sala].some(
+                reserva => reserva.assento === assento && reserva.data === data && reserva.horario === horario
+            );
+        }
+
+        function gerarAssentos(total, sala) {
+            const container = document.getElementById('assentos');
+            container.innerHTML = '';
+
+            const data = document.getElementById('data').value;
+            const horario = document.getElementById('horario').value;
+
+            for (let i = 1; i <= total; i++) {
+                const assento = document.createElement('div');
+                assento.classList.add('assento');
+                assento.textContent = i;
+
+                if (verificarConflito(sala, i, data, horario)) {
+                    assento.classList.add('reservado');
+                } else {
+                    assento.addEventListener('click', () => selecionarAssento(assento, sala, data, horario));
+                }
+
+                container.appendChild(assento);
+            }
+        }
+
+        function mostrarAssentos() {
+            const sala = document.getElementById('sala').value;
+            const totalAssentos = salas[sala];
+
+            document.getElementById('assentos-container').style.display = 'block';
+            gerarAssentos(totalAssentos, sala);
+        }
+
+        function selecionarAssento(assento, sala, data, horario) {
+            const numero = parseInt(assento.textContent);
+
+            if (assento.classList.contains('selecionado')) {
+                assento.classList.remove('selecionado');
+                reservas[sala] = reservas[sala].filter(
+                    reserva => !(reserva.assento === numero && reserva.data === data && reserva.horario === horario)
+                );
+            } else {
+                assento.classList.add('selecionado');
+                reservas[sala].push({ assento: numero, data, horario });
+            }
+        }
+
+        function finalizarReserva() {
+            const sala = document.getElementById('sala').value;
+            const data = document.getElementById('data').value;
+            const horario = document.getElementById('horario').value;
+
+            const assentosReservados = reservas[sala]
+                .filter(reserva => reserva.data === data && reserva.horario === horario)
+                .map(reserva => reserva.assento);
+
+            if (assentosReservados.length === 0) {
+                alert('Nenhum assento selecionado!');
+                return;
+            }
+
+            alert(`Assentos reservados na sala ${sala} em ${data} às ${horario}: ${assentosReservados.join(', ')}`);
+            mostrarAssentos();
+        }
+    </script>
+
+</body>
+</html>
