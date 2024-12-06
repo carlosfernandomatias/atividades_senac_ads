@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reservas - Cinema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos Globais */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom, #141e30, #243b55);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #ffcc00;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .session-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: space-between;
+        }
+
+        .session-info label {
+            font-size: 1.1em;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        select, input[type="date"] {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: none;
+            width: 100%;
+            max-width: 300px;
+            background: #2a2a2a;
+            color: #fff;
+        }
+
+        select:focus, input[type="date"]:focus {
+            outline: 2px solid #ffcc00;
+        }
+
+        /* Estilo dos Cartões de Filme */
+        .filmes-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .filme {
+            position: relative;
+            overflow: hidden;
+            width: 48%;
+            border-radius: 10px;
+            transition: transform 0.4s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .filme:hover {
+            transform: scale(1.05);
+        }
+
+        .filme img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .info-filme {
+            position: absolute;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            width: 100%;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .info-filme h3 {
+            margin: 0;
+            color: #ffcc00;
+            font-size: 1.5em;
+        }
+
+        /* Resumo do filme (overlay) */
+        .filme .resumo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .filme:hover .resumo {
+            opacity: 1;
+        }
+
+        .resumo p {
+            margin: 10px 0 0;
+            font-size: 1em;
+            line-height: 1.5em;
+        }
+
+        .resumo h3 {
+            font-size: 1.5em;
+            color: #ffcc00;
+        }
+
+        /* Estilos dos Assentos */
+        .assentos {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        .assento {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background: #2a2a2a;
+            color: #fff;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .assento:hover {
+            transform: translateY(-3px);
+            background-color: #ffcc00;
+            color: #000;
+        }
+
+        .assento.reservado {
+            background-color: #f44336;
+            color: white;
+            cursor: not-allowed;
+        }
+
+        .assento.selecionado {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Botões */
+        button {
+            padding: 12px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            margin: 10px 0;
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+        }
+
+        button:hover {
+            background: #ffcc00;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .finalizar {
+            background-color: #2196F3;
+        }
+
+        .finalizar:hover {
+            background-color: #1976D2;
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Sistema de Reservas</h1>
+    <div class="container">
+        <div class="session-info">
+            <label for="sala">Sala:</label>
+            <select id="sala">
+                <option value="tradicional">Tradicional</option>
+                <option value="vip">Vip</option>
+            </select>
+
+            <label for="filme">Filme:</label>
+            <select id="filme">
+                <option value="filme1">Filme 1</option>
+                <option value="filme2">Filme 2</option>
+            </select>
+
+            <label for="data">Data:</label>
+            <input type="date" id="data">
+
+            <label for="horario">Horário:</label>
+            <select id="horario">
+                <option value="19:00">19:00</option>
+                <option value="21:00">21:00</option>
+            </select>
+        </div>
+
+        <div class="filmes-container">
+            <div class="filme">
+                <img src="https://via.placeholder.com/500x300?text=Filme+1" alt="Filme 1">
+                <div class="info-filme">
+                    <h3>Filme 1</h3>
+                </div>
+                <div class="resumo">
+                    <h3>Filme 1</h3>
+                    <p>Um emocionante drama sobre amizade e superação, com cenas inesquecíveis e atuações brilhantes.</p>
+                </div>
+            </div>
+            <div class="filme">
+                <img src="https://via.placeholder.com/500x300?text=Filme+2" alt="Filme 2">
+                <div class="info-filme">
+                    <h3>Filme 2</h3>
+                </div>
+                <div class="resumo">
+                    <h3>Filme 2</h3>
+                    <p>Uma aventura épica cheia de ação e mistério, levando os espectadores a uma jornada emocionante.</p>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="mostrarAssentos()">Ver Assentos</button>
+
+        <div id="assentos-container" style="display: none;">
+            <h2>Escolha seu assento</h2>
+            <div class="assentos" id="assentos"></div>
+            <button onclick="finalizarReserva()" class="finalizar">Finalizar Reserva</button>
+        </div>
+    </div>
+
+    <script>
+        const salas = {
+            tradicional: 70,
+            vip: 35
+        };
+
+        const reservas = {
+            tradicional: [],
+            vip: []
+        };
+
+        function verificarConflito(sala, assento, data, horario) {
+            return reservas[sala].some(
+                reserva => reserva.assento === assento && reserva.data === data && reserva.horario === horario
+            );
+        }
+
+        function gerarAssentos(total, sala) {
+            const container = document.getElementById('assentos');
+            container.innerHTML = '';
+
+            const data = document.getElementById('data').value;
+            const horario = document.getElementById('horario').value;
+
+            for (let i = 1; i <= total; i++) {
+                const assento = document.createElement('div');
+                assento.classList.add('assento');
+                assento.textContent = i;
+
+                if (verificarConflito(sala, i, data, horario)) {
+                    assento.classList.add('reservado');
+                } else {
+                    assento.addEventListener('click', () => selecionarAssento(assento, sala, data, horario));
+                }
+
+                container.appendChild(assento);
+            }
+        }
+
+        function mostrarAssentos() {
+            const sala = document.getElementById('sala').value;
+            const totalAssentos = salas[sala];
+
+            document.getElementById('assentos-container').style.display = 'block';
+            gerarAssentos(totalAssentos, sala);
+        }
+
+        function selecionarAssento(assento, sala, data, horario) {
+            const numero = parseInt(assento.textContent);
+
+            if (assento.classList.contains('selecionado')) {
+                assento.classList.remove('selecionado');
+                reservas[sala] = reservas[sala].filter(
+                    reserva => !(reserva.assento === numero && reserva.data === data && reserva.horario === horario)
+                );
+            } else {
+                assento.classList.add('selecionado');
+                reservas[sala].push({ assento: numero, data, horario });
+            }
+        }
+
+        function finalizarReserva() {
+            const sala = document.getElementById('sala').value;
+            const data = document.getElementById('data').value;
+            const horario = document.getElementById('horario').value;
+
+            const assentosReservados = reservas[sala]
+                .filter(reserva => reserva.data === data && reserva.horario === horario)
+                .map(reserva => reserva.assento);
+
+            if (assentosReservados.length === 0) {
+                alert('Nenhum assento selecionado!');
+                return;
+            }
+
+            alert(`Assentos reservados na sala ${sala} em ${data} às ${horario}: ${assentosReservados.join(', ')}`);
+            mostrarAssentos();
+        }
+    </script>
+</body>
+</html>
