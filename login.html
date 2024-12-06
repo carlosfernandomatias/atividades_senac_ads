@@ -149,7 +149,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             alert("Login bem-sucedido!");
             console.log(resultado.authToken)
             localStorage.setItem('authToken', resultado.authToken);
-            window.location.href = "index.html"; 
+            window.location.href = "cadastroUsuario.html"; 
         } else {
             document.getElementById('error-message').textContent = resultado.message;
         }
