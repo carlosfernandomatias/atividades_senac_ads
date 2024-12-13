@@ -3,23 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consulta de Localização</title>
+    <title>Consulta do Clima</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-</head>
-<body class="bg-light">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #2193b0, #6dd5ed);
+            color: #fff;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
 
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Consulta de Localização no Brasil</h1>
+        .container {
+            margin-top: 50px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            animation: fadeIn 0.8s;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .weather-icon {
+            width: 80px;
+            height: 80px;
+        }
+
+        #weatherResult h3 {
+            color: #007bff;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            color: #333;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-content" class="container text-center">
+        <h1 class="mb-4">Consulta do Clima</h1>
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="card shadow-sm">
+                <div class="card shadow">
                     <div class="card-body">
                         <form id="locationForm">
                             <div class="mb-3">
                                 <label for="city" class="form-label">Digite o nome da cidade:</label>
                                 <input type="text" id="city" class="form-control" placeholder="Ex.: Natal" required>
                             </div>
-                            <button type="button" id="searchBtn" class="btn btn-primary w-100">Buscar</button>
+                            <button type="button" id="searchBtn" class="btn btn-primary w-100 mb-2">Buscar</button>
+                            <button type="button" id="openModalBtn" class="btn btn-secondary w-100">Ver Status da API</button>
                         </form>
                     </div>
                 </div>
@@ -33,23 +89,66 @@
         </div>
     </div>
 
+    <!-- Modal para exibir status das chamadas de API -->
+    <div class="modal fade" id="apiStatusModal" tabindex="-1" aria-labelledby="apiStatusModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="apiStatusModalLabel">Status das Chamadas de API</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="apiStatusContent">
+                    <p>Nenhum status no momento. Clique em "Buscar" para verificar.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        const apiStatusModal = new bootstrap.Modal(document.getElementById('apiStatusModal'));
+        const apiStatusContent = document.getElementById('apiStatusContent');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const mainContent = document.getElementById('main-content');
+        const weatherResult = document.getElementById('weatherResult');
+
+        let apiLogs = []; // Variável para armazenar os logs das chamadas de API
+
+        function openModal() {
+            mainContent.setAttribute('inert', ''); 
+            apiStatusModal.show();
+        }
+
+        function closeModal() {
+            mainContent.removeAttribute('inert'); // Reativa os outros elementos
+        }
+
+        function updateModalContent(data) {
+            apiStatusContent.innerHTML = `
+                <h5>Response Completo:</h5>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        }
+
+        document.querySelector('.btn-close').addEventListener('click', closeModal);
+
         document.getElementById('searchBtn').addEventListener('click', async () => {
             const cityInput = document.getElementById('city').value;
-            const weatherResult = document.getElementById('weatherResult');
             weatherResult.innerHTML = '';
             weatherResult.classList.remove('d-none', 'alert-danger', 'alert-info');
+
+            apiLogs.push(`Iniciando chamada para a cidade: ${cityInput}...`);
 
             if (!cityInput) {
                 weatherResult.innerHTML = 'Por favor, insira o nome da cidade.';
                 weatherResult.classList.add('alert-danger');
+                apiLogs.push('Erro: Nenhuma cidade foi inserida.');
                 return;
             }
 
             try {
-                const apiKey = 'd9cca18cb8acaa247750d067fa5e0218'; 
+                const apiKey = 'd9cca18cb8acaa247750d067fa5e0218'; // Substitua pela sua API Key
 
-                // Consultar a API do OpenWeatherMap
                 const geoResponse = await fetch(
                     `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=5&appid=${apiKey}`
                 );
@@ -58,39 +157,60 @@
                 if (!geoData.length) {
                     weatherResult.innerHTML = 'Cidade não encontrada.';
                     weatherResult.classList.add('alert-danger');
+                    apiLogs.push('Erro: Cidade não encontrada.');
                     return;
                 }
 
-                // Filtrar resultados para o Brasil
-                const filteredLocations = geoData.filter((location) => location.country === 'BR');
-
+                const filteredLocations = geoData.filter(location => location.country === 'BR');
                 if (!filteredLocations.length) {
                     weatherResult.innerHTML = 'Nenhuma cidade encontrada no Brasil.';
                     weatherResult.classList.add('alert-danger');
+                    apiLogs.push('Erro: Nenhuma cidade encontrada no Brasil.');
                     return;
                 }
 
-                // Exibir os resultados das cidades encontradas
+                  
+                
+                const { lat, lon } = filteredLocations[0];
+                apiLogs.push(`Localização obtida: Latitude ${lat}, Longitude ${lon}.`);
+
+                const weatherResponse = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&lang=pt_br&units=metric`
+                );
+                const weatherData = await weatherResponse.json();
+
+                // Atualizar modal com o response completo
+                updateModalContent(weatherData);
+
+                // Exibir os resultados na página
                 weatherResult.innerHTML = `
-                    <h3>Resultados para "${cityInput}" no Brasil:</h3>
-                    ${filteredLocations
-                        .map(
-                            (location) => `
-                        <p><strong>Estado:</strong> ${location.state || 'Desconhecido'}</p>
-                        <p><strong>Latitude:</strong> ${location.lat}</p>
-                        <p><strong>Longitude:</strong> ${location.lon}</p>
-                        <hr>
-                    `
-                        )
-                        .join('')}
+                    <h3>Clima Atual em ${filteredLocations[0].name}</h3>
+                    <img src="http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png" class="weather-icon" alt="Ícone do clima">
+                    <p><strong>Clima:</strong> ${weatherData.weather[0].description}</p>
+                    <p><strong>Temperatura:</strong> ${weatherData.main.temp}°C</p>
+                    <p><strong>Sensação Térmica:</strong> ${weatherData.main.feels_like}°C</p>
+                    <p><strong>Temperatura Mínima:</strong> ${weatherData.main.temp_min}°C</p>
+                    <p><strong>Temperatura Máxima:</strong> ${weatherData.main.temp_max}°C</p>
+                    <p><strong>Umidade:</strong> ${weatherData.main.humidity}%</p>
+                    <p><strong>Pressão Atmosférica:</strong> ${weatherData.main.pressure} hPa</p>
+                    <p><strong>Visibilidade:</strong> ${weatherData.visibility / 1000} km</p>
+                    <p><strong>Velocidade do Vento:</strong> ${weatherData.wind.speed} m/s</p>
+                    <p><strong>Direção do Vento:</strong> ${weatherData.wind.deg}°</p>
+                    <p><strong>Hora do Nascimento do Sol:</strong> ${new Date(weatherData.sys.sunrise * 1000).toLocaleTimeString()}</p>
+                    <p><strong>Hora do Pôr do Sol:</strong> ${new Date(weatherData.sys.sunset * 1000).toLocaleTimeString()}</p>
                 `;
                 weatherResult.classList.add('alert-info');
+                apiLogs.push('Sucesso: Dados do clima obtidos com sucesso.');
             } catch (error) {
                 console.error(error);
                 weatherResult.innerHTML = 'Erro ao processar os dados. Tente novamente mais tarde.';
                 weatherResult.classList.add('alert-danger');
+                apiLogs.push('Erro: Falha ao processar os dados.');
             }
         });
+
+        // Botão para abrir o modal
+        openModalBtn.addEventListener('click', openModal);
     </script>
 
 </body>
