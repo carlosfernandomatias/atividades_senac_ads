@@ -1,0 +1,10 @@
+const filteredLocations = [
+    { lat: -5.7945, lon: -35.211, name: "Natal" },
+    { lat: -23.5505, lon: -46.6333, name: "São Paulo" }
+];
+
+// Desestruturação para obter 'lat' e 'lon' do primeiro objeto no array
+const { lat, lon } = filteredLocations[0];
+
+console.log(lat); // -5.7945
+console.log(lon); // -35.211
