@@ -149,9 +149,7 @@
             try {
                 const apiKey = 'd9cca18cb8acaa247750d067fa5e0218'; // Substitua pela sua API Key
 
-                const geoResponse = await fetch(
-                    `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=5&appid=${apiKey}`
-                );
+                const geoResponse = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=5&appid=${apiKey}`);
                 const geoData = await geoResponse.json();
 
                 if (!geoData.length) {
@@ -174,9 +172,7 @@
                 const { lat, lon } = filteredLocations[0];
                 apiLogs.push(`Localização obtida: Latitude ${lat}, Longitude ${lon}.`);
 
-                const weatherResponse = await fetch(
-                    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&lang=pt_br&units=metric`
-                );
+                const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&lang=pt_br&units=metric`);
                 const weatherData = await weatherResponse.json();
 
                 // Atualizar modal com o response completo
