@@ -1,0 +1,9 @@
+{
+  "name": "Assinatura Online",
+  "description": "Envie documentos para assinatura com o Autentique diretamente do Pipefy.",
+  "icon": "https://link-do-icone.png",
+  "type": "sidebar",
+  "permissions": ["read_cards"],
+  "url": "https://seu-app-host.com",
+  "version": "1.0.0"
+}
